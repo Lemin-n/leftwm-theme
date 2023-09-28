@@ -503,7 +503,6 @@ mod test {
     }
 
     #[test]
-    #[should_panic]
     fn test_config_new() {
         let config1 = Config::new(None);
         assert!(config1.config_dir.is_none());

@@ -4,6 +4,9 @@
 
 /patches/
 
+# Nix flake output
+/result
+
 .*
 !/.gitignore
 

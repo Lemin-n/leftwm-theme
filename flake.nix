@@ -33,9 +33,6 @@
             commonArgs = {
               inherit src;
               pname = "leftwm-theme";
-            };
-            cargoArtifacts = craneLib.buildDepsOnly (commonArgs
-              // {
               nativeBuildInputs = with pkgs; [
                 pkg-config
                 openssl
@@ -45,10 +42,15 @@
                 xorg.libXinerama
               ];
               preConfigure = ''
+                mkdir -p home/build
+                export HOME=$(pwd)/home/build
+                export XDG_CONFIG_HOME="$HOME/.config";
                 export PKG_CONFIG_PATH=${pkgs.openssl.dev}/lib/pkgconfig
                 export OPENSSL_DIR=${pkgs.openssl.dev}
               '';
-            });
+            };
+            cargoArtifacts =
+              craneLib.buildDepsOnly commonArgs;
             app = craneLib.buildPackage (commonArgs
               // {
               inherit cargoArtifacts;
