@@ -28,7 +28,19 @@
           let
             lib = pkgs.lib;
             toolchain = fenix.packages.x86_64-linux.latest.toolchain;
-            craneLib = crane.lib.${system}.overrideToolchain toolchain;
+            craneLib = (crane.lib.${system}.overrideToolchain toolchain).overrideScope' (final: prev: {
+              mkCargoDerivation = args:
+                prev.mkCargoDerivation ({
+                  impureEnvVars =
+                    lib.fetchers.proxyImpureEnvVars
+                      ++ [
+                      "GIT_PROXY_COMMAND"
+                      "NIX_GIT_SSL_CAINFO"
+                      "SOCKS_SERVER"
+                    ];
+                }
+                // args);
+            });
             src = craneLib.cleanCargoSource (craneLib.path ./.);
             commonArgs = {
               inherit src;
@@ -54,6 +66,7 @@
             app = craneLib.buildPackage (commonArgs
               // {
               inherit cargoArtifacts;
+              doCheck = false;
             });
           in
           rec

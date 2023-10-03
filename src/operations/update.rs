@@ -131,7 +131,6 @@ mod test {
     use std::io::Write;
 
     #[test]
-    #[should_panic]
     fn test_update_repos() {
         // Create a local repo file with test themes.
         let tmpdir = tempfile::tempdir().unwrap();
